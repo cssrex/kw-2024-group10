@@ -1,5 +1,5 @@
 <div align="center" style = "size:1px;">
-<h1 align ="center"> <img src="./images/main_image.png" width="60" alt="Icon"> 중간 지점 계산기 </h1>
+<h1 align ="center"> <img src="./images/main_image.png" width="40" alt="Icon"> 중간 지점 계산기 </h1>
 </div>
 
 <h2> Abstract </h2>
@@ -8,6 +8,7 @@
 총 인원수를 입력받고, 각 인원들의 위치를 찍어서 해당 인원들의 중간 지점에서 가장 가까운 지하철역을 계산합니다. <br>
 그 후에는 최종적으로 각 인원별로 목적지까지 가는 노선도를 알려줍니다. <br>
 
+<div align="center" style = "margin-top:20px;"><img src="./images/abstract_image2.png" width="450" alt="overview"></div>
 <div align="center" style = "margin-top:20px;"><img src="./images/abstract_image.png" width="450" alt="overview"></div>
 </p>
 
@@ -34,9 +35,8 @@
 
 <h2 style = "margin-top:100px;"> List of technologies required </h2>
 <p style = "cfont-size : 90%; margin:2%"> 
-- HTML<br>
-- CSS<br>
-- JavaScript<br>
-- 주택 위치 정보에 대한 API<br>
-- 지하철역 위치 정보에 대한 API<br>
+<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
+<img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white">
+<img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=white"><br>
+카카오 개발자 지도 API<br>
 </p>
