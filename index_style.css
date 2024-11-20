@@ -1,30 +1,21 @@
-#container_map_searchbar {
-    display: flex;
-    align-items: center;
-}
-
 #map {
     align-items: center;
     width: 100%;
-    height: 400px;
-
+    height: 600px;
 }
 
 #searchBar {
     position: absolute;
-    top: 10px;
-    /* 상단 여백 */
-    left: 50%;
-    transform: translateX(-50%);
-    /* 가로 중앙 정렬 */
+    top: 30px;
+    left: 30px;
     z-index: 2;
+    display: flex;
+    align-items: center;
     background-color: white;
-    border-color: #FFFFFF;
     border-radius: 5px;
     padding: 5px 10px;
-
-    width: 350px;
-    box-shadow: none;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    width: 300px;
 }
 
 #keyword {
@@ -50,17 +41,16 @@
 }
 
 #placesList {
-    /* 
     position: absolute;
     top: 80px;
-    left: 50%;
+    left: 37px;
     background-color: white;
-    width: 370px;
+    width: 320px;
     border: 1px solid #ddd;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
     max-height: 500px;
     overflow-y: auto;
-    z-index: 2; */
+    z-index: 2;
 }
 
 .placeItem {
@@ -89,4 +79,22 @@
 
 .info .gray {
     color: #8a8a8a;
+}
+
+#markerInfo {
+    margin-top: 20px;
+    padding: 10px;
+    border-top: 2px solid #ddd;
+    background: #f9f9f9;
+}
+
+#markerList {
+    list-style-type: none;
+    padding: 0;
+}
+
+#markerList li {
+    margin: 5px 0;
+    font-size: 14px;
+    font-weight: bold;
 }
