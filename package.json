@@ -1,0 +1,15 @@
+{
+  "name": "kw-2024-group10",
+  "version": "0.0.1",
+  "description": "<div align=\"center\" style = \"size:1px;\">\r <h1 align =\"center\"> <img src=\"./images/main_image.png\" width=\"40\" alt=\"Icon\"> 중간 지점 계산기 </h1>\r </div>",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1"
+  }
+}
