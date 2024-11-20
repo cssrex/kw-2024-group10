@@ -190,6 +190,8 @@
 				return;
 			}
 
+			infowindow.close();
+
 			// 검색 결과 목록 초기화
 			document.getElementById('placesList').style.display = 'block'; // 목록 보이게 하기
 			ps.keywordSearch(keyword, placesSearchCB);
@@ -218,6 +220,7 @@
 			var listEl = document.getElementById('placesList');
 			listEl.innerHTML = '';
 			removeSearchMarkers();
+			infowindow.close();
 
 			for (var i = 0; i < places.length; i++) {
 				var itemEl = document.createElement('div');
@@ -234,7 +237,7 @@
 				itemEl.onclick = (function (place) {
 					return function () {
 						map.setCenter(new kakao.maps.LatLng(place.y, place.x));
-						infowindow.setContent('<div style="padding:5px;">' + place.place_name + '</div>');
+						infowindow.setContent('<div style="padding:5px; text-align:center;">' + place.place_name + '</div>');
 						infowindow.open(map, new kakao.maps.Marker({
 							position: new kakao.maps.LatLng(place.y, place.x)
 						}));
