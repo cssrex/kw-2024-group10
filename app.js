@@ -1,4 +1,4 @@
-// 주소 선택 우선순위 도로명 주소 -> 지번 주소 -> 근처 가장 가까운 주소 -> 주소 없음
+// 주소 선택 우선순위 지번 주소 -> 근처 가장 가까운 주소 -> 주소 없음
 
 var mapContainer = document.getElementById('map'), // 지도를 표시할 div  
     mapOption = {
@@ -29,14 +29,13 @@ kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
     // 좌표 기준으로 도로명 주소 먼저 요청
     geocoder.coord2Address(coord.getLng(), coord.getLat(), function (result, status) {
         if (status === kakao.maps.services.Status.OK) {
-            var roadAddress = result[0].road_address ? result[0].road_address.address_name : null;
             var jibunAddress = result[0].address ? result[0].address.address_name : null;
 
             // 도로명 주소 또는 지번 주소가 없으면 주변 장소 검색
-            if (!roadAddress && !jibunAddress) {
+            if (!jibunAddress) {
                 searchNearbyPlaces(coord); // 근처 장소 검색 함수 호출
             } else {
-                addMarker(coord, roadAddress || jibunAddress || "주소 정보 없음");
+                addMarker(coord, jibunAddress || "주소 정보 없음");
             }
         } else {
             searchNearbyPlaces(coord); // 도로명 주소 요청 실패 시 근처 장소 검색
@@ -50,7 +49,7 @@ function searchNearbyPlaces(coord) {
         if (status === kakao.maps.services.Status.OK && data.length > 0) {
             // 가장 가까운 장소의 도로명 주소 또는 지번 주소 가져오기
             var place = data[0];
-            var address = place.road_address_name || place.address_name || "주소 정보 없음";
+            var address = place.address_name || "주소 정보 없음";
 
             // 마커 추가
             addMarker(new kakao.maps.LatLng(place.y, place.x), address);
@@ -86,8 +85,10 @@ function addMarker(position, roadAddress) {
 
     // 배열에 마커 정보 추가
     markerInfos.push({
-        marker: marker,
-        roadAddress: roadAddress
+        marker: marker,             // 마커 객체
+        roadAddress: roadAddress,   // 주소
+        lat: position.getLat(),     // 위도
+        lng: position.getLng()      // 경도
     });
 
     // 생성된 마커 클릭 시 마커를 제거
@@ -258,15 +259,14 @@ function displaySearchMarker(place, index) {
         document.getElementById('keyword').value = ''; // 검색창 초기화
 
         // 도로명 주소 또는 지번 주소 확인
-        var roadAddress = place.road_address_name || null;
         var jibunAddress = place.address_name || null;
 
-        if (!roadAddress && !jibunAddress) {
+        if (!jibunAddress) {
             // 도로명 주소와 지번 주소 모두 없을 경우, 근처 장소 검색
             searchNearbyPlaces(new kakao.maps.LatLng(place.y, place.x));
         } else {
             // 도로명 주소 또는 지번 주소 중 하나 사용
-            var displayAddress = roadAddress || jibunAddress || "주소 정보 없음";
+            var displayAddress = jibunAddress || "주소 정보 없음";
             addMarker(marker.getPosition(), displayAddress); // 해당 위치에 일반 마커 표시
         }
 
@@ -286,57 +286,21 @@ function removeSearchMarkers() {
     searchMarkers = [];
 }
 
-// 중간 지점을 표시할 마커를 저장할 변수
-var centerMarker = null;
-
-// 중간 지점을 계산하는 함수
-function calculateCenterPoint() {
-    if (markerInfos.length === 0) {
-        alert("추가된 마커가 없습니다.");
+function moveResult() {
+    if (markerInfos.length < 2) {
+        alert("2명 이상의 위치를 표시해주세요."); // 마커가 없으면 경고 메시지 출력
         return;
     }
 
-    // 모든 마커의 위도와 경도를 더하여 평균을 구함
-    var totalLat = 0;
-    var totalLng = 0;
-    markerInfos.forEach((info) => {
-        totalLat += info.marker.getPosition().getLat();
-        totalLng += info.marker.getPosition().getLng();
-    });
+    // markerInfos에서 위도와 경도만 추출
+    const markerLatLng = markerInfos.map(info => ({
+        lat: info.lat,
+        lng: info.lng
+    }));
 
-    var centerLat = totalLat / markerInfos.length;
-    var centerLng = totalLng / markerInfos.length;
+    // 추출한 데이터를 로컬 스토리지에 저장
+    localStorage.setItem('markerInfos', JSON.stringify(markerLatLng));
 
-    // 중간 지점 위치 생성
-    var centerPosition = new kakao.maps.LatLng(centerLat, centerLng);
-
-    // 기존 중간 지점 마커가 있으면 제거
-    if (centerMarker) {
-        centerMarker.setMap(null);
-    }
-
-    // 새로운 중간 지점 마커 생성
-    centerMarker = new kakao.maps.Marker({
-        position: centerPosition,
-        map: map,
-        image: new kakao.maps.MarkerImage(
-            './images/marker.png', // 기존 마커 이미지 사용
-            new kakao.maps.Size(45, 45)
-        )
-    });
-
-    // 지도를 중간 지점으로 이동
-    map.setCenter(centerPosition);
-
-    // 중간 지점 정보 표시
-    updateCenterPointInfo(centerPosition);
+    // result.html로 이동
+    window.location.href = "result.html";
 }
-
-// 중간 지점 정보 표시하는 함수
-function updateCenterPointInfo(centerPosition) {
-    var infoEl = document.getElementById("centerPointInfo");
-    infoEl.innerHTML = `중간 지점: 위도 ${centerPosition.getLat()}, 경도 ${centerPosition.getLng()}`;
-}
-
-// 중간 지점 버튼 클릭 시 계산 호출
-document.getElementById("calculateCenterButton").addEventListener("click", calculateCenterPoint);
