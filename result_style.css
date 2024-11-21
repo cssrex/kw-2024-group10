@@ -1,0 +1,12 @@
+#map {
+    align-items: center;
+    width: 100%;
+    height: 600px;
+}
+
+#coordinates {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+}
