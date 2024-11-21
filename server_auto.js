@@ -17,7 +17,7 @@ app.listen(PORT, () => {
 
 
 // client-side JavaScript (웹 페이지에서 실행)
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
     const { exec } = require('child_process');
 
     exec('node server.js', (err, stdout, stderr) => {
