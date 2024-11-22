@@ -33,10 +33,17 @@ function displayCenterPoint(lat, lng) {
     const infoEl = document.getElementById("centerPointInfo");
     infoEl.innerHTML = `중간 지점: 위도 ${lat}, 경도 ${lng}`;
 
+    // 마커 이미지 설정 (app.js와 동일)
+    const imageSrc = './images/marker.png'; // 마커 이미지 경로
+    const imageSize = new kakao.maps.Size(45, 45); // 마커 이미지 크기
+    const imageOption = { offset: new kakao.maps.Point(22, 45) }; // 앵커 포인트 설정
+    const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
+
     // Kakao 지도에 마커 추가
     const centerPosition = new kakao.maps.LatLng(lat, lng);
     const centerMarker = new kakao.maps.Marker({
         position: centerPosition,
+        image: markerImage, // 마커 이미지 적용
         map: window.map, // result.html에서 초기화된 Kakao 지도 객체
     });
 
