@@ -88,7 +88,8 @@ function addMarker(position, roadAddress) {
         marker: marker,             // 마커 객체
         roadAddress: roadAddress,   // 주소
         lat: position.getLat(),     // 위도
-        lng: position.getLng()      // 경도
+        lng: position.getLng(),     // 경도
+        addr: roadAddress
     });
 
     // 생성된 마커 클릭 시 마커를 제거
@@ -286,6 +287,22 @@ function removeSearchMarkers() {
     searchMarkers = [];
 }
 
+// 모든 마커와 마커 정보를 초기화하는 함수
+function clearAllMarkers() {
+    // 지도에서 마커 제거
+    markerInfos.forEach((info) => {
+        info.marker.setMap(null);
+    });
+
+    // 마커 정보 배열 초기화
+    markerInfos = [];
+
+    // 마커 리스트 UI 업데이트
+    updateMarkerList();
+
+    alert("모든 위치 정보가 초기화되었습니다.");
+}
+
 function moveResult() {
     if (markerInfos.length < 2) {
         alert("2명 이상의 위치를 표시해주세요."); // 마커가 없으면 경고 메시지 출력
@@ -295,7 +312,8 @@ function moveResult() {
     // markerInfos에서 위도와 경도만 추출
     const markerLatLng = markerInfos.map(info => ({
         lat: info.lat,
-        lng: info.lng
+        lng: info.lng,
+        addr: info.addr
     }));
 
     // 추출한 데이터를 로컬 스토리지에 저장
