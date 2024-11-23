@@ -14,22 +14,15 @@
     <div id="map"></div>
     <!-- 좌표 정보를 출력할 영역 ##데이터 전달 테스트용 지워도 됨##-->
     <!-- <div id="coordinates"></div> -->
-    <div id="centerPointInfo"></div>
+    <h3 id="markerList">마커 리스트</h3>
 
+    <div id="centerPointInfo"></div>
     <script type="text/javascript"
         src="//dapi.kakao.com/v2/maps/sdk.js?appkey=3780059fca203989bc13194d4ddcdcf0"></script>
 
     <!-- ##아래 내용도 midpoint.js로 이동## -->
     <script>
-        // Kakao 지도 초기화
-        var mapContainer = document.getElementById('map'), // 지도를 표시할 div
-            mapOption = {
-                center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울 시청을 초기 중심 좌표로 설정
-                level: 3 // 확대 레벨
-            };
 
-        // 지도 객체를 여러 스크립트 파일에서 사용하기 위해 var -> window. 으로 변경
-        window.map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
     </script>
     <script src="./midpoint.js"></script> <!-- markerInfos 로드 -->
 </body>
