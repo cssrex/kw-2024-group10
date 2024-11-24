@@ -6,6 +6,15 @@ var midpoint = [];
 let centerMarker = null;
 // 마커 저장 배열
 let markers = [];
+
+// 태그 이름 목록
+const tags = ['Tag 1', 'Tag 2', 'Tag 3', 'Tag 4', 'Tag 5'];
+
+// 태그을 추가할 컨테이너
+const tagButtonsContainer = document.getElementById('tagButtons');
+// 사이드바
+const sidebar = document.getElementById('sidebar');
+
 // ==================== 함수 ====================
 
 // 중간 지점을 계산하는 함수
@@ -61,27 +70,47 @@ function displayMarkerList(markerInfos) {
     const markerListDiv = document.getElementById("markerList");
 
     if (!markerInfos || markerInfos.length === 0) {
-        markerListDiv.innerHTML = "마커 데이터가 없습니다.";
+        markerListDiv.innerHTML = `<p class="text-gray-500">No markers available.</p>`;
         return;
     }
 
     // 기존 리스트 초기화
-    markerListDiv.innerHTML = "<h3>마커 리스트</h3>";
+    markerListDiv.innerHTML = "";
 
-    // 체크박스 리스트 생성
     markerInfos.forEach((info, index) => {
+        // 체크박스 컨테이너 생성
         const markerItem = document.createElement("div");
+        markerItem.className = "flex items-start space-x-4 p-4 border border-gray-300 rounded-lg shadow-sm";
+
+        // 체크박스 생성
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.id = `marker-${index}`;
         checkbox.value = index;
-        checkbox.checked = true;
+        checkbox.checked = true; // 기본 선택
+        checkbox.className = "mt-1 h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring focus:ring-blue-500";
+
+        // 텍스트 컨테이너
+        const textContainer = document.createElement("div");
+        textContainer.className = "flex-1";
+
+        // 제목
         const label = document.createElement("label");
         label.htmlFor = `marker-${index}`;
-        label.innerText = `마커 ${index + 1}: ${info.addr === undefined ? "주소들어갈 공간" : info.addr}`;
+        label.className = "block text-sm font-medium text-gray-800";
+        label.innerText = `Marker ${index + 1}: ${info.addr || "No address available"}`;
 
+        // 설명
+        const description = document.createElement("p");
+        description.className = "mt-1 text-sm text-gray-600";
+        description.innerText = `Latitude: ${info.lat}, Longitude: ${info.lng}`;
+
+        textContainer.appendChild(label);
+        textContainer.appendChild(description);
+
+        // 요소 조합
         markerItem.appendChild(checkbox);
-        markerItem.appendChild(label);
+        markerItem.appendChild(textContainer);
         markerListDiv.appendChild(markerItem);
 
         // 체크박스 이벤트 핸들러
@@ -164,6 +193,48 @@ var mapContainer = document.getElementById('map'), // 지도를 표시할 div
     };
 
 window.map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+
+
+// 태그 동적 생성
+tags.forEach((tagName) => {
+    // 버튼 요소 생성
+    const button = document.createElement('button');
+    button.className =
+        'rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500';
+    button.textContent = tagName;
+
+    // 버튼 클릭 이벤트 추가 (필요 시)
+    button.addEventListener('click', () => {
+        /* 
+        
+        여기에 추가 하시면 돼욤
+        태그 클릭시 핸들러 
+        
+        */
+    });
+
+    // 컨테이너에 버튼 추가
+    tagButtonsContainer.appendChild(button);
+});
+
+const toggleButton = document.getElementById('toggleButton');
+const toggleIcon = document.getElementById('toggleIcon');
+
+// 버튼 클릭 이벤트 처리
+toggleButton.addEventListener('click', () => {
+    if (sidebar.classList.contains('hidden')) {
+        // 사이드바 열기
+        sidebar.classList.remove('hidden');
+        toggleButton.style.left = '300px'; // 버튼 위치 조정
+        toggleIcon.src = './images/sidebar_toggle_left.png'; // 아이콘 변경
+    } else {
+        // 사이드바 닫기
+        sidebar.classList.add('hidden');
+        toggleButton.style.left = '0'; // 버튼 위치 조정
+        toggleIcon.src = './images/sidebar_toggle_right.png'; // 아이콘 변경
+    }
+});
+
 
 // 페이지 로드 시 중간 지점 계산
 calculateCenterPoint(markerInfos);

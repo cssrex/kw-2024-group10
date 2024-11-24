@@ -5,16 +5,27 @@
     <meta charset="utf-8">
     <title>결과 화면</title>
     <link rel="stylesheet" href="./result_style.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
     </style>
 </head>
 
 <body>
+    <div id="sidebar">
+        <h3 class="text-lg font-bold mb-4">Locations</h3>
+        <div id="markerList"></div>
+    </div>
+    <!-- 사이드바 토글 버튼 -->
+    <div id="toggleButton">
+        <img id="toggleIcon" src="./images/sidebar_toggle_left.png" alt="toggle button">
+    </div>
     <!-- 지도 표시 영역 -->
     <div id="map"></div>
     <!-- 좌표 정보를 출력할 영역 ##데이터 전달 테스트용 지워도 됨##-->
     <!-- <div id="coordinates"></div> -->
-    <h3 id="markerList">마커 리스트</h3>
+    <div id="tagButtons" class="flex space-x-4">
+ 
+    </div>
 
     <div id="centerPointInfo"></div>
     <script type="text/javascript"
