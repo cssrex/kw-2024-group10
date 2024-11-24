@@ -1,7 +1,21 @@
+body {
+    margin: 0;
+    display: flex;
+    height: 100vh;
+}
+
+#sidebar {
+    width: 300px;
+    background-color: #f9f9f9;
+    border-right: 1px solid #ddd;
+    overflow-y: auto;
+    padding: 16px;
+}
+
 #map {
-    align-items: center;
-    width: 100%;
-    height: 600px;
+    flex: 1; /* 부모 요소의 나머지 공간을 차지 */
+    height: 100vh;
+    position: relative;
 }
 
 #coordinates {
@@ -9,4 +23,42 @@
     text-align: center;
     font-size: 18px;
     font-weight: bold;
+}
+
+/* 태그 버튼 위치 */
+#tagButtons {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    background-color: #fff;
+    padding: 8px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+#toggleButton {
+    position: absolute;
+    top: 50%;
+    left: 300px;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 10;
+}
+#toggleButton img {
+    width: 16px;
+    height: 16px;
+}
+
+#toggleButton.hidden {
+    left: 0;
 }
