@@ -121,6 +121,13 @@ function updateMarkerList() {
     markerInfos.forEach((info, index) => {
         var li = document.createElement("li");
         li.textContent = `${index + 1}. ${info.roadAddress}`;
+        li.style.cursor = "pointer"; // 마우스 커서를 포인터로 변경
+
+        // 리스트 아이템 클릭 시 해당 마커 위치로 지도 이동
+        li.addEventListener("click", function () {
+            map.setCenter(new kakao.maps.LatLng(info.lat, info.lng));
+        });
+
         markerListEl.appendChild(li);
     });
 }
