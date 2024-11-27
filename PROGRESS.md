@@ -1,9 +1,9 @@
 # Progress Report for 10조
 
 ## Progress Summary 
-####초기 화면 페이지 구현 및 구성
-####결과 화면 페이지 구현 및 구성
-####중간 지점 알고리즘 구현
+###초기 화면 페이지 구현 및 구성
+###결과 화면 페이지 구현 및 구성
+###중간 지점 알고리즘 구현
 
 ### Project Schedule
 ![schdule](/images/schedule_11.png)
