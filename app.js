@@ -24,23 +24,32 @@ var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
 
 // 지도를 클릭했을때 클릭한 위치에 마커를 추가하도록 지도에 클릭이벤트를 등록합니다
 kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
-    // 클릭한 위치의 도로명 주소를 가져옵니다
+    // 클릭한 위치의 지번 주소를 가져옵니다
     var coord = mouseEvent.latLng;
-    // 좌표 기준으로 도로명 주소 먼저 요청
+    // 좌표 기준으로 지번 주소 먼저 요청
     geocoder.coord2Address(coord.getLng(), coord.getLat(), function (result, status) {
         if (status === kakao.maps.services.Status.OK) {
             var jibunAddress = result[0].address ? result[0].address.address_name : null;
 
-            // 도로명 주소 또는 지번 주소가 없으면 주변 장소 검색
+            // 지번 주소가 없으면 주변 장소 검색
             if (!jibunAddress) {
                 searchNearbyPlaces(coord); // 근처 장소 검색 함수 호출
             } else {
                 addMarker(coord, jibunAddress || "주소 정보 없음");
             }
         } else {
-            searchNearbyPlaces(coord); // 도로명 주소 요청 실패 시 근처 장소 검색
+            searchNearbyPlaces(coord); // 지번 주소 요청 실패 시 근처 장소 검색
         }
     });
+
+    // 검색 목록 닫기
+    document.getElementById('placesList').style.display = 'none';
+
+    // 모든 오버레이 삭제
+    removeAllOverlays();
+
+    // 번호 마커 제거
+    removeSearchMarkers();
 });
 
 // 근처 장소 검색 함수
@@ -329,3 +338,16 @@ function moveResult() {
     // result.html로 이동
     window.location.href = "result.html";
 }
+
+// 문서의 아무 곳이나 클릭했을 때 이벤트 처리
+document.addEventListener('click', function (event) {
+    var placesListEl = document.getElementById('placesList');
+    var searchBarEl = document.getElementById('searchBar');
+
+    // 클릭한 요소가 검색 목록이나 검색 바 내부가 아니라면 검색 목록 숨김
+    if (!placesListEl.contains(event.target) && !searchBarEl.contains(event.target)) {
+        placesListEl.style.display = 'none';
+        removeAllOverlays();
+        removeSearchMarkers();
+    }
+});
