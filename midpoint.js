@@ -352,16 +352,16 @@ const toggleIcon = document.getElementById('toggleIcon');
 
 // 버튼 클릭 이벤트 처리
 toggleButton.addEventListener('click', () => {
-    if (sidebar.classList.contains('hidden')) {
+    if (sidebar.classList.contains('closed')) {
         // 사이드바 열기
-        sidebar.classList.remove('hidden');
-        toggleButton.style.left = '300px'; // 버튼 위치 조정
-        toggleIcon.src = './images/sidebar_toggle_left.png'; // 아이콘 변경
+        sidebar.classList.remove('closed');
+        toggleButton.style.left = '412px'; // 버튼 위치 조정
+        toggleIcon.src = './images/sidebar_toggle_right.png'; // 아이콘 변경
     } else {
         // 사이드바 닫기
-        sidebar.classList.add('hidden');
+        sidebar.classList.add('closed');
         toggleButton.style.left = '0'; // 버튼 위치 조정
-        toggleIcon.src = './images/sidebar_toggle_right.png'; // 아이콘 변경
+        toggleIcon.src = './images/sidebar_toggle_left.png'; // 아이콘 변경
     }
 });
 

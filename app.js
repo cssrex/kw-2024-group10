@@ -158,12 +158,12 @@ toggleButton.addEventListener('click', () => {
     if (sidebar.classList.contains('closed')) {
         // 사이드바 열기
         sidebar.classList.remove('closed');
-        toggleButton.style.left = "380px"; // 버튼 위치 조정
+        toggleButton.classList.remove('closed'); // 토글 버튼 위치 조정
         toggleIcon.src = './images/sidebar_toggle_right.png'; // 아이콘 변경
     } else {
         // 사이드바 닫기
         sidebar.classList.add('closed');
-        toggleButton.style.left = "0"; // 버튼 위치 조정
+        toggleButton.classList.add('closed'); // 토글 버튼 위치 조정
         toggleIcon.src = './images/sidebar_toggle_left.png'; // 아이콘 변경
     }
 });
