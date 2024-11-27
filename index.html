@@ -10,26 +10,35 @@
 </head>
 
 <body>
-	<div id="container_map_searchbar">
-		<div id="map">
-			<div id="searchBar">
-				<input type="text" id="keyword" placeholder="장소를 입력하세요 예) 광운대" onkeydown="handleEnterKey(event)">
-				<button id="searchButton" onclick="searchPlaces()">
-					<img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Search Icon">
-				</button>
-			</div>
+	<div id="sidebar">
+		<h3 id="sidbarTitle">중간 지점 계산기</h3>
+		<div id="searchBar">
+			<input type="text" id="keyword" placeholder="장소를 입력하세요 예) 광운대" onkeydown="handleEnterKey(event)">
+			<button id="searchButton" onclick="searchPlaces()">
+				<img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="Search Icon">
+			</button>
+		</div>
+		<div id="controlButtons">
+			<button id="searchListButton" onclick="showSearchList()">검색 목록</button>
+			<button id="markerListButton" onclick="showMarkerList()">선택 위치 목록</button>
+		</div>
+		<div id="moveResult">
+			<button id="clearMarkersButton" onclick="clearAllMarkers()">초기화</button>
+			<button id="calculateCenterButton" onclick="moveResult()">중간 지점 계산</button>
+		</div>
+		<div id="placesList"></div>
+		<div id="markerInfo">
+			<h3>현재 선택된 마커 정보</h3>
+			<ul id="markerList"></ul>
 		</div>
 	</div>
-	<div id="placesList"></div>
-	<div id="markerInfo">
-		<h3>현재 선택된 마커 정보</h3>
-		<ul id="markerList"></ul>
+	<div id="toggleButton">
+		<img id="toggleIcon" src="./images/sidebar_toggle_right.png" alt="toggle button">
+	</div>
+	<div id="container_map_searchbar">
+		<div id="map"></div>
 	</div>
 
-	<div id="moveResult">
-		<button id="calculateCenterButton" onclick="moveResult()">중간 지점 계산</button>
-		<button id="clearMarkersButton" onclick="clearAllMarkers()">초기화</button>
-	</div>
 	<div id="centerPointInfo"></div>
 
 	<script type="text/javascript"
