@@ -143,7 +143,6 @@ function setMarkers(map) {
     }
 }
 
-/////////////////////////////////////////////////////////////
 const toggleButton = document.getElementById('toggleButton');
 const toggleIcon = document.getElementById('toggleIcon');
 const sidebar = document.getElementById('sidebar');
@@ -159,7 +158,7 @@ toggleButton.addEventListener('click', () => {
     if (sidebar.classList.contains('closed')) {
         // 사이드바 열기
         sidebar.classList.remove('closed');
-        toggleButton.style.left = "352px"; // 버튼 위치 조정
+        toggleButton.style.left = "380px"; // 버튼 위치 조정
         toggleIcon.src = './images/sidebar_toggle_right.png'; // 아이콘 변경
     } else {
         // 사이드바 닫기
@@ -180,7 +179,6 @@ function showMarkerList() {
     markerInfoEl.style.display = "block"; // 선택 위치 표시
     placesListEl.style.display = "none"; // 검색 목록 숨김
 }
-// ////////////////////////////////////////////////////////////////
 
 // 검색 내용 저장할 배열
 var searchMarkers = [];
