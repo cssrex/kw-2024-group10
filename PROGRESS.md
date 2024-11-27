@@ -1,4 +1,4 @@
-<img width="957" alt="image" src="https://github.com/user-attachments/assets/e2ceebf2-a469-4988-8122-eca835794390"># Progress Report for 10조
+# Progress Report for 10조
 
 ## Progress Summary 
 #### 초기 화면 페이지 구현 및 구성
