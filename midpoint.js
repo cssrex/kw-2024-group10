@@ -129,39 +129,8 @@ function calculateCenterPoint(markerInfos) {
         const sortedCoords = sortCoordinates(markerInfos); // 좌표 정렬
         const centroid = calculateCentroid(sortedCoords); // 무게중심 계산
 
-<<<<<<< HEAD
-    // 2. 각 점에서 중심까지의 거리 계산
-    const distances = markerInfos.map(point =>
-        Math.sqrt((point.lat - center.lat) ** 2 + (point.lng - center.lng) ** 2)
-    );
-
-    // 3. 평균 거리와 표준편차 계산
-    const meanDistance = distances.reduce((a, b) => a + b, 0) / distances.length;
-    const stdDevDistance = Math.sqrt(
-        distances.reduce((sum, d) => sum + (d - meanDistance) ** 2, 0) / distances.length
-    );
-
-    // 4. 멀리 있는 위치라는 것을 판단할 임계값 설정
-    const range = Math.max(...distances) - Math.min(...distances);
-    const thresholdMultiplier = 1 + range / (meanDistance + 1e-6); // 동적 계산
-    //const thresholdMultiplier = 0.5; //기본 임계값
-    const threshold = meanDistance + thresholdMultiplier * 5 * stdDevDistance;
-
-    // 5. 가까운 점 그룹과 멀리 있는 점 분류
-    const closemarkerInfos = [];
-    let farPoint = null;
-    let farDistance = 0;
-
-    markerInfos.forEach((point, index) => {
-        if (distances[index] > threshold) {
-            farPoint = point; // 멀리 있는 점 (하나만 있다고 가정)
-            farDistance = distances[index]; // 해당 점의 거리
-        } else {
-            closemarkerInfos.push(point); // 가까운 점 그룹
-=======
         if (centroid) {
             displayCenterPoint(centroid.lat, centroid.lng); // 지도에 표시
->>>>>>> 5cb240d (Changed Algorithm)
         }
     }
 }
