@@ -1,21 +1,29 @@
 #map {
-    align-items: center;
     width: 100%;
-    height: 600px;
+    height: 100%;
+    /* 지도 컨테이너의 높이를 100%로 설정 */
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    /* 사이드바 뒤에 배치 */
 }
 
 #searchBar {
-    position: absolute;
-    top: 30px;
-    left: 30px;
-    z-index: 2;
     display: flex;
     align-items: center;
+    /* 검색창 내부 아이템 정렬 */
+    justify-content: flex-start;
+    /* 검색창 내부 좌측 정렬 */
     background-color: white;
     border-radius: 5px;
-    padding: 5px 10px;
+    padding: 10px;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
-    width: 300px;
+    width: 100%;
+    /* 사이드바 너비에 맞춤 */
+    max-width: 300px;
+    /* 최대 너비 제한 */
+    margin-bottom: 2px;
 }
 
 #keyword {
@@ -23,7 +31,6 @@
     outline: none;
     font-size: 16px;
     padding: 5px;
-    width: 250px;
     flex-grow: 1;
 }
 
@@ -38,19 +45,6 @@
     height: 20px;
     filter: brightness(0) invert(0.5);
     opacity: 0.6;
-}
-
-#placesList {
-    position: absolute;
-    top: 80px;
-    left: 37px;
-    background-color: white;
-    width: 320px;
-    border: 1px solid #ddd;
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
-    max-height: 500px;
-    overflow-y: auto;
-    z-index: 2;
 }
 
 .placeItem {
@@ -81,12 +75,20 @@
     color: #8a8a8a;
 }
 
+#placesList,
 #markerInfo {
-    margin-top: 20px;
+    flex-grow: 1;
+    /* 남은 공간을 채우도록 설정 */
+    margin-top: 2px;
+    /* 위젯과 일정 간격 유지 */
+    overflow-y: auto;
+    /* 스크롤 가능 */
+    border-top: 1px solid #ddd;
+    width: 100%;
     padding: 10px;
-    border-top: 2px solid #ddd;
-    background: #f9f9f9;
-    width: 400px;
+    /* 내부 여백 추가 */
+    box-sizing: border-box;
+    /* 여백 포함 */
 }
 
 #markerList {
@@ -98,4 +100,105 @@
     margin: 5px 0;
     font-size: 14px;
     font-weight: bold;
+}
+
+#sidebar {
+    background-color: #f9f9f9;
+    border-right: 1px solid #ddd;
+    overflow-y: auto;
+    padding: 16px;
+    z-index: 10;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 320px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transform: translate(0);
+    transition: transform 0.3s ease-out;
+    gap: 10px;
+}
+
+/* 사이드바 숨김 상태 */
+#sidebar.closed {
+    transform: translateX(-100%);
+    /* 사이드바를 왼쪽으로 숨김 */
+}
+
+#toggleButton {
+    position: fixed;
+    top: 50%;
+    left: 352px;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 11;
+}
+
+#toggleButton img {
+    width: 16px;
+    height: 16px;
+}
+
+#toggleButton.hidden {
+    left: 0;
+}
+
+#controlButtons {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    width: 100%;
+}
+
+#controlButtons button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: center;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#controlButtons button:hover {
+    background-color: #0056b3;
+}
+
+#moveResult {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    width: 100%;
+}
+
+#moveResult button {
+    flex: 1;
+    /* 모든 버튼이 동일한 너비를 가짐 */
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: center;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#moveResult button:hover {
+    background-color: #218838;
 }

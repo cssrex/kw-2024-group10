@@ -42,13 +42,8 @@ kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
         }
     });
 
-    // 검색 목록 닫기
-    document.getElementById('placesList').style.display = 'none';
-
     // 모든 오버레이 삭제
     removeAllOverlays();
-
-    // 번호 마커 제거
     removeSearchMarkers();
 });
 
@@ -148,6 +143,45 @@ function setMarkers(map) {
     }
 }
 
+/////////////////////////////////////////////////////////////
+const toggleButton = document.getElementById('toggleButton');
+const toggleIcon = document.getElementById('toggleIcon');
+const sidebar = document.getElementById('sidebar');
+const placesListEl = document.getElementById("placesList");
+const markerInfoEl = document.getElementById("markerInfo");
+
+window.onload = function () {
+    showSearchList();
+}
+
+// 토글 버튼 클릭 이벤트 처리
+toggleButton.addEventListener('click', () => {
+    if (sidebar.classList.contains('closed')) {
+        // 사이드바 열기
+        sidebar.classList.remove('closed');
+        toggleButton.style.left = "352px"; // 버튼 위치 조정
+        toggleIcon.src = './images/sidebar_toggle_right.png'; // 아이콘 변경
+    } else {
+        // 사이드바 닫기
+        sidebar.classList.add('closed');
+        toggleButton.style.left = "0"; // 버튼 위치 조정
+        toggleIcon.src = './images/sidebar_toggle_left.png'; // 아이콘 변경
+    }
+});
+
+// "검색 목록" 버튼 클릭 이벤트
+function showSearchList() {
+    placesListEl.style.display = "block"; // 검색 목록 표시
+    markerInfoEl.style.display = "none"; // 선택 위치 숨김
+}
+
+// "선택 위치" 버튼 클릭 이벤트
+function showMarkerList() {
+    markerInfoEl.style.display = "block"; // 선택 위치 표시
+    placesListEl.style.display = "none"; // 검색 목록 숨김
+}
+// ////////////////////////////////////////////////////////////////
+
 // 검색 내용 저장할 배열
 var searchMarkers = [];
 
@@ -167,6 +201,8 @@ function searchPlaces() {
     }
 
     removeAllOverlays();
+    removeSearchMarkers();
+    searchMarkers = [];
 
     // 검색 결과 목록 초기화
     document.getElementById('placesList').style.display = 'block'; // 목록 보이게 하기
@@ -174,9 +210,6 @@ function searchPlaces() {
 }
 
 function placesSearchCB(data, status, pagination) {
-    // 이전에 생성된 마커를 제거
-    removeSearchMarkers();
-
     // 검색 결과가 있으면 목록을 표시
     if (status === kakao.maps.services.Status.OK) {
         displayPlaces(data);
@@ -195,9 +228,13 @@ function placesSearchCB(data, status, pagination) {
 function displayPlaces(places) {
     var listEl = document.getElementById('placesList');
     listEl.innerHTML = '';
-    removeSearchMarkers();
 
-    for (var i = 0; i < places.length; i++) {
+    // 모든 마커를 다시 지도에 표시
+    for (let i = 0; i < searchMarkers.length; i++) {
+        searchMarkers[i].setMap(map);
+    }
+
+    for (let i = 0; i < places.length; i++) {
         var itemEl = document.createElement('div');
         itemEl.className = 'placeItem';
         itemEl.innerHTML = `
@@ -209,10 +246,9 @@ function displayPlaces(places) {
                     </div>
                 `;
 
-        itemEl.onclick = (function (place) {
+        itemEl.onclick = (function (place, index) {
             return function () {
                 map.setCenter(new kakao.maps.LatLng(place.y, place.x));
-
                 removeAllOverlays();
 
                 // CustomOverlay 내용과 스타일 지정
@@ -243,8 +279,13 @@ function displayPlaces(places) {
                 });
 
                 overlays.push(overlay);
+
+                // 모든 번호 마커를 다시 지도에 표시
+                for (let j = 0; j < searchMarkers.length; j++) {
+                    searchMarkers[j].setMap(map);
+                }
             };
-        })(places[i]);
+        })(places[i], i);
 
         listEl.appendChild(itemEl);
     }
@@ -271,11 +312,12 @@ function displaySearchMarker(place, index) {
         )
     });
 
+    marker.setMap(map);
+    searchMarkers.push(marker);
+
     // 마커 클릭 시 마커를 일반 마커로 교체하고 검색창을 초기화합니다.
     kakao.maps.event.addListener(marker, 'click', function () {
-        document.getElementById('keyword').value = ''; // 검색창 초기화
-
-        // 도로명 주소 또는 지번 주소 확인
+        // 지번 주소 확인
         var jibunAddress = place.address_name || null;
 
         if (!jibunAddress) {
@@ -288,19 +330,15 @@ function displaySearchMarker(place, index) {
         }
 
         marker.setMap(null); // 번호 마커는 지도에서 제거
-        document.getElementById('placesList').style.display = 'none'; // 검색 결과 목록 숨기기
         removeSearchMarkers();
         removeAllOverlays();
     });
-
-    searchMarkers.push(marker);
 }
 
 function removeSearchMarkers() {
     for (var i = 0; i < searchMarkers.length; i++) {
         searchMarkers[i].setMap(null);
     }
-    searchMarkers = [];
 }
 
 // 모든 마커와 마커 정보를 초기화하는 함수
@@ -338,16 +376,3 @@ function moveResult() {
     // result.html로 이동
     window.location.href = "result.html";
 }
-
-// 문서의 아무 곳이나 클릭했을 때 이벤트 처리
-document.addEventListener('click', function (event) {
-    var placesListEl = document.getElementById('placesList');
-    var searchBarEl = document.getElementById('searchBar');
-
-    // 클릭한 요소가 검색 목록이나 검색 바 내부가 아니라면 검색 목록 숨김
-    if (!placesListEl.contains(event.target) && !searchBarEl.contains(event.target)) {
-        placesListEl.style.display = 'none';
-        removeAllOverlays();
-        removeSearchMarkers();
-    }
-});
