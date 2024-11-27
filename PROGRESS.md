@@ -20,3 +20,8 @@
 
 ### 김주영
 결과화면 페이지 구현 및 UI/UX 개선 [code](https://github.com/cssrex/kw-2024-group10/commit/0dae3a695f6e918124bff895048788572d0c6683)             & [issue](https://github.com/cssrex/kw-2024-group10/issues/10)
+
+
+### 최유완 
+서버 및 웹 페이지 구현 [Commit_Link]https://github.com/cssrex/kw-2024-group10/commit/f40816371a00041c0888f0c24243d076f40527ff
+가중치 중간 지점 알고리즘 구현 [Commit_Link]https://github.com/cssrex/kw-2024-group10/commit/cd619afaacad922e1cce01aa314551f63d67edda
