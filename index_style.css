@@ -20,10 +20,9 @@
     padding: 10px;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
     width: 100%;
-    /* 사이드바 너비에 맞춤 */
-    max-width: 400px;
-    /* 최대 너비 제한 */
     margin-bottom: 2px;
+    box-sizing: border-box;
+    /* 내부 패딩 포함 */
 }
 
 #keyword {
@@ -130,7 +129,7 @@
 #toggleButton {
     position: fixed;
     top: 50%;
-    left: 380px;
+    left: 412px;
     transform: translateY(-50%);
     width: 32px;
     height: 32px;
@@ -143,6 +142,7 @@
     align-items: center;
     cursor: pointer;
     z-index: 11;
+    transition: transform 0.3s ease-out;
 }
 
 #toggleButton img {
@@ -150,7 +150,7 @@
     height: 16px;
 }
 
-#toggleButton.hidden {
+#toggleButton.closed {
     left: 0;
 }
 
