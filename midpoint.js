@@ -76,10 +76,10 @@ function calculateCenterPoint(markerInfos) {
     );
 
     // 4. 멀리 있는 위치라는 것을 판단할 임계값 설정
-    // const range = Math.max(...distances) - Math.min(...distances);
-    // const thresholdMultiplier = 1 + range / (meanDistance + 1e-6); // 동적 계산
-    const thresholdMultiplier = 0.5; //기본 임계값
-    const threshold = meanDistance + thresholdMultiplier * stdDevDistance;
+    const range = Math.max(...distances) - Math.min(...distances);
+    const thresholdMultiplier = 1 + range / (meanDistance + 1e-6); // 동적 계산
+    //const thresholdMultiplier = 0.5; //기본 임계값
+    const threshold = meanDistance + thresholdMultiplier * 5 * stdDevDistance;
 
     // 5. 가까운 점 그룹과 멀리 있는 점 분류
     const closemarkerInfos = [];
