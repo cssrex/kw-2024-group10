@@ -6,8 +6,8 @@
 중간 지점 알고리즘 구현
 
 ### Project Schedule
-![schdule](/images/schdule_11.png)
-![schdule](/images/schdule_12.png)
+![schdule](/images/schedule_11.png)
+![schdule](/images/schedule_12.png)
 
 ### Project Screenshot
 
