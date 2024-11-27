@@ -15,55 +15,121 @@ const tagButtonsContainer = document.getElementById('tagButtons');
 // 사이드바
 const sidebar = document.getElementById('sidebar');
 
+// 가중치 적용 여부 (기본값: 사용하지 않음)
+let useWeights = false;
+
+
 // ==================== 함수 ====================
 
-// 중간 지점을 계산하는 함수
-function calculateCenterPoint(markerInfos) {
-    /*
-    if (!markerInfos || markerInfos.length === 0) {
-        alert("마커 데이터가 없습니다.");
-        return;
+// 신발끈 공식으로 다각형의 면적 계산
+function calculatePolygonArea(coords) {
+    let area = 0;
+    const n = coords.length;
+
+    for (let i = 0; i < n; i++) {
+        const x1 = coords[i].lng;
+        const y1 = coords[i].lat;
+        const x2 = coords[(i + 1) % n].lng; // 마지막 좌표 이후 첫 번째로 순환
+        const y2 = coords[(i + 1) % n].lat;
+
+        area += x1 * y2 - x2 * y1;
     }
 
-    // 모든 마커의 위도와 경도를 더하여 평균을 구함
-    let totalLat = 0;
-    let totalLng = 0;
+    return Math.abs(area) / 2; // 절댓값으로 면적 반환
+}
 
-    markerInfos.forEach((info) => {
-        totalLat += info.lat;
-        totalLng += info.lng;
-    });
+// 신발끈 공식으로 다각형의 무게중심 계산
+function calculateCentroid(coords) {
+    let cx = 0, cy = 0;
+    const n = coords.length;
+    const area = calculatePolygonArea(coords);
 
-    const centerLat = totalLat / markerInfos.length;
-    const centerLng = totalLng / markerInfos.length;
-    midpoint[0] = centerLat;
-    midpoint[1] = centerLng;
-    // 결과 출력
-    displayCenterPoint(centerLat, centerLng);
-    */
-
-
-    /* 
-        [가중치를 수정하고 싶을 때 조절할 변수들]
-        thresholdMultiplier(82번 라인) : 멀리 있는 점을 판단하는 기준을 얼마나 엄격하게 할지
-        weightFar(112번 라인) : 멀리 있는 점은 가중치를 얼마로 둬서 계산할지
-    */
-
-    if (!markerInfos || markerInfos.length === 0) {
-        alert("마커 데이터가 없습니다.");
-        return;
+    if (area === 0) {
+        alert("유효하지 않은 다각형입니다.");
+        return null;
     }
 
-    // 1. 중심점(평균) 계산
-    const n = markerInfos.length;
-    const center = markerInfos.reduce(
+    for (let i = 0; i < n; i++) {
+        const x1 = coords[i].lng;
+        const y1 = coords[i].lat;
+        const x2 = coords[(i + 1) % n].lng;
+        const y2 = coords[(i + 1) % n].lat;
+
+        const crossProduct = x1 * y2 - x2 * y1;
+        cx += (x1 + x2) * crossProduct;
+        cy += (y1 + y2) * crossProduct;
+    }
+
+    cx = cx / (6 * area);
+    cy = cy / (6 * area);
+
+    return { lat: cy, lng: cx };
+}
+
+// 좌표를 중심 기준으로 정렬
+function sortCoordinates(coords) {
+    const center = coords.reduce(
         (acc, point) => ({
-            lat: acc.lat + point.lat / n,
-            lng: acc.lng + point.lng / n,
+            lat: acc.lat + point.lat / coords.length,
+            lng: acc.lng + point.lng / coords.length,
         }),
         { lat: 0, lng: 0 }
     );
 
+    return coords.sort((a, b) => {
+        const angleA = Math.atan2(a.lat - center.lat, a.lng - center.lng);
+        const angleB = Math.atan2(b.lat - center.lat, b.lng - center.lng);
+        return angleA - angleB; // 반시계 방향 정렬
+    });
+}
+
+// 중간 지점 계산 함수
+function calculateCenterPoint(markerInfos) {
+    if (!markerInfos || markerInfos.length === 0) {
+        alert("마커 데이터가 없습니다.");
+        return;
+    }
+
+    // 마커가 1개일 경우 해당 마커 위치로 중간 지점 설정
+    if (markerInfos.length === 1) {
+        const centerLat = markerInfos[0].lat;
+        const centerLng = markerInfos[0].lng;
+        displayCenterPoint(centerLat, centerLng); // 지도에 표시
+        return;
+    }
+
+    // 가중치를 사용하는 경우
+    let totalWeight = 0;
+    let weightedLatSum = 0;
+    let weightedLngSum = 0;
+
+    markerInfos.forEach(marker => {
+        const weight = marker.weight || 1; // 가중치가 없으면 기본값 1
+        totalWeight += weight;
+        weightedLatSum += marker.lat * weight;
+        weightedLngSum += marker.lng * weight;
+    });
+
+    const centerLat = weightedLatSum / totalWeight;
+    const centerLng = weightedLngSum / totalWeight;
+    displayCenterPoint(centerLat, centerLng); // 지도에 표시
+    return;
+
+
+    // 마커가 2개일 경우 단순 평균 계산
+    if (markerInfos.length === 2) {
+        const centerLat = (markerInfos[0].lat + markerInfos[1].lat) / 2;
+        const centerLng = (markerInfos[0].lng + markerInfos[1].lng) / 2;
+        displayCenterPoint(centerLat, centerLng); // 지도에 표시
+        return;
+    }
+
+    // 마커가 3개 이상일 경우 다각형 무게중심 계산
+    if (markerInfos.length >= 3) {
+        const sortedCoords = sortCoordinates(markerInfos); // 좌표 정렬
+        const centroid = calculateCentroid(sortedCoords); // 무게중심 계산
+
+<<<<<<< HEAD
     // 2. 각 점에서 중심까지의 거리 계산
     const distances = markerInfos.map(point =>
         Math.sqrt((point.lat - center.lat) ** 2 + (point.lng - center.lng) ** 2)
@@ -92,41 +158,33 @@ function calculateCenterPoint(markerInfos) {
             farDistance = distances[index]; // 해당 점의 거리
         } else {
             closemarkerInfos.push(point); // 가까운 점 그룹
+=======
+        if (centroid) {
+            displayCenterPoint(centroid.lat, centroid.lng); // 지도에 표시
+>>>>>>> 5cb240d (Changed Algorithm)
         }
-    });
+    }
+}
 
-    // 6. 가까운 점들의 중심 계산
-    const closeCenter = closemarkerInfos.reduce(
-        (acc, point) => ({
-            lat: acc.lat + point.lat / closemarkerInfos.length,
-            lng: acc.lng + point.lng / closemarkerInfos.length,
-        }),
-        { lat: 0, lng: 0 }
-    );
-    
-    // 7. 가중치 계산
-    let weightFar = 0.01; // 기본 가중치
-    if (farPoint) {
-        // 거리에 반비례하는 가중치 설정 (멀수록 가중치 감소)
-        const maxDistance = Math.max(...distances); // 가장 큰 거리
-        weightFar = 0.3 / (1 + farDistance / maxDistance); // 거리 비율에 따른 가중치
+// 중간 지점 마커 표시
+function displayCenterPoint(lat, lng) {
+    if (centerMarker) {
+        centerMarker.setMap(null);
     }
 
-    // 8. 가중치를 적용하여 중간 좌표 계산
-    const weightedCenter = farPoint
-        ? {
-                lat:
-                    (closeCenter.lat + weightFar * farPoint.lat) /
-                    (1 + weightFar),
-                lng:
-                    (closeCenter.lng + weightFar * farPoint.lng) /
-                    (1 + weightFar),
-            }
-        : closeCenter; // 멀리 있는 점이 없으면 가까운 점 중심 반환
-    
-    if(farPoint==closeCenter) console.log("동일");
+    const imageSrc = './images/marker.png'; // 마커 이미지 경로
+    const imageSize = new kakao.maps.Size(45, 45);
+    const imageOption = { offset: new kakao.maps.Point(22, 45) };
+    const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
 
-    displayCenterPoint(weightedCenter.lat, weightedCenter.lng);
+    const centerPosition = new kakao.maps.LatLng(lat, lng);
+    centerMarker = new kakao.maps.Marker({
+        position: centerPosition,
+        image: markerImage,
+        map: window.map,
+    });
+
+    map.setCenter(centerPosition); // 지도의 중심 이동
 }
 
 // 중간 지점을 출력하는 함수
@@ -193,8 +251,22 @@ function displayMarkerList(markerInfos) {
         description.className = "mt-1 text-sm text-gray-600";
         description.innerText = `Latitude: ${info.lat}, Longitude: ${info.lng}`;
 
+        // 가중치 슬라이더 추가
+        const weightSlider = document.createElement("input");
+        weightSlider.type = "range";
+        weightSlider.min = "1";
+        weightSlider.max = "10";
+        weightSlider.value = info.weight || 1; // 기본 가중치
+        weightSlider.className = "mt-2 w-full";
+        weightSlider.addEventListener("input", (event) => {
+            info.weight = parseInt(event.target.value, 10); // 가중치 업데이트
+            console.log(`Marker ${index + 1}: Weight updated to ${info.weight}`);
+            center_point_Selected(); // 가중치 변경 시 중간 지점 재계산
+        });
+
         textContainer.appendChild(label);
         textContainer.appendChild(description);
+        textContainer.appendChild(weightSlider);
 
         // 요소 조합
         markerItem.appendChild(checkbox);
@@ -272,6 +344,7 @@ function center_point_Selected() {
 }
 
 
+
 // ==================== 함수 호출 ====================
 // Kakao 지도 초기화
 var mapContainer = document.getElementById('map'), // 지도를 표시할 div
@@ -330,4 +403,3 @@ calculateCenterPoint(markerInfos);
 displayMarkerList(markerInfos);
 
 console.log(midpoint);
-
