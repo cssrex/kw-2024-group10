@@ -28,6 +28,6 @@
 
 
 ### 최정현
-메인 페이지 마커 관련 이벤트 및 검색 기능 구현 [Commit Link](https://github.com/cssrex/kw-2024-group10/commit/e851b4808184189ce6d22d16cab9cf05ae84942d)
-데이터 관리 및 전송 구현 [Commit Link](https://github.com/cssrex/kw-2024-group10/commit/e3ba076c619232b18a55c93e5d6fc745157ba1be)
+메인 페이지 마커 관련 이벤트 및 검색 기능 구현 [Commit Link](https://github.com/cssrex/kw-2024-group10/commit/e851b4808184189ce6d22d16cab9cf05ae84942d) <br>
+데이터 관리 및 전송 구현 [Commit Link](https://github.com/cssrex/kw-2024-group10/commit/e3ba076c619232b18a55c93e5d6fc745157ba1be) <br>
 메인 페이지 UI/UX 개선 예정
