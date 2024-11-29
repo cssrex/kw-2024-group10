@@ -4,9 +4,10 @@
 
 <h2> Abstract </h2>
 <p style = "margin:2%"> 
-서울 내에서 각 인원들의 중간 지점 중 어느 역에서 만날지 계산해서 출력해주는 프로젝트입니다. <br>
-총 인원수를 입력받고, 각 인원들의 위치를 찍어서 해당 인원들의 중간 지점에서 가장 가까운 지하철역을 계산합니다. <br>
-그 후에는 최종적으로 각 인원별로 목적지까지 가는 노선도를 알려줍니다. <br>
+각 인원들의 위치를 입력 받아서 중간 지점을 계산한 다음, 중간 지점 주변의 스팟(음식점, 지하철역 등)을 추천해주는 프로젝트입니다. <br>
+한두명의 인원이 특출나게 멀거나, 중간 지점 계산을 제외하고 싶은 경우를 위해 각각의 인원에 대해서 빼고 계산하거나 가중치를 주어서 계산할 수 있도록 되어있습니다.
+각각의 인원에 위치를 지도에 찍고 "중간 지점 계산"을 누르면 해당 인원들의 중간 지점에서 가장 가까운 스팟(음식점, 지하철역 등)을 추천해줍니다. <br>
+각 인원들에 대해 가는 길 또한 지도에 표시됩니다. <br>
 
 <div align="center" style = "margin-top:20px;"><img src="./images/abstract_image2.png" width="450" alt="overview"></div>
 <div align="center" style = "margin-top:20px;"><img src="./images/abstract_image.png" width="450" alt="overview"></div>
@@ -38,5 +39,6 @@
 <img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
 <img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white">
 <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=white"><br>
-카카오 개발자 지도 API<br>
+Kakao MAP API<br>
+Kakao Mobility API<br>
 </p>
