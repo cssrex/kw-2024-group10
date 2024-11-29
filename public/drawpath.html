@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>경로 그리기 테스트</title>
+  <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=3780059fca203989bc13194d4ddcdcf0&libraries=services"></script>
+  <style>
+    #map {
+      width: 100%;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script>
+    // Kakao Map 초기화
+    const mapContainer = document.getElementById('map');
+    const mapOption = {
+      center: new kakao.maps.LatLng(37.5666103, 126.9783881),
+      level: 5, // 지도 레벨
+    };
+    const map = new kakao.maps.Map(mapContainer, mapOption);
+
+    // 시작과 도착 좌표
+    const startCoords = { lat: 37.5666103, lng: 126.9783881 };
+    const endCoords = { lat: 37.4979423, lng: 127.0276367 };
+
+    // 마커 생성
+    const startMarker = new kakao.maps.Marker({
+      position: new kakao.maps.LatLng(startCoords.lat, startCoords.lng),
+      map: map,
+    });
+
+    const endMarker = new kakao.maps.Marker({
+      position: new kakao.maps.LatLng(endCoords.lat, endCoords.lng),
+      map: map,
+    });
+
+    // 경로 데이터 요청 및 처리
+    fetch(`http://localhost:8080/directions?origin=${startCoords.lng},${startCoords.lat}&destination=${endCoords.lng},${endCoords.lat}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch route data.');
+        }
+        return response.json();
+      })
+      .then(routeData => {
+        console.log('Route data received:', routeData);
+        drawPath(map, routeData); // 경로를 지도에 그리는 함수 호출
+      })
+      .catch(error => {
+        console.error('Error fetching route data:', error);
+        alert('Failed to fetch route data.');
+      });
+
+    // 경로 그리기 함수
+    function drawPath(map, routeData) {
+      if (!routeData || !routeData.routes || routeData.routes.length === 0) {
+        alert('No route data available to draw.');
+        return;
+      }
+
+      // 첫 번째 경로 데이터 가져오기
+      const firstRoute = routeData.routes[0];
+      const sections = firstRoute.sections;
+
+      if (!sections || sections.length === 0) {
+        alert('No sections available in route data.');
+        return;
+      }
+
+      // Polyline을 그릴 좌표 배열 생성
+      const path = [];
+      sections.forEach(section => {
+        if (section.roads && section.roads.length > 0) {
+          section.roads.forEach(road => {
+            if (road.vertexes && road.vertexes.length > 0) {
+              // vertexes는 [경도, 위도, 경도, 위도, ...] 순서로 제공되므로, 이를 변환
+              for (let i = 0; i < road.vertexes.length; i += 2) {
+                const lng = road.vertexes[i];
+                const lat = road.vertexes[i + 1];
+                path.push(new kakao.maps.LatLng(lat, lng));
+              }
+            }
+          });
+        }
+      });
+
+      if (path.length === 0) {
+        alert('No valid path data to draw.');
+        return;
+      }
+
+      // Polyline 생성 및 지도에 표시
+      const polyline = new kakao.maps.Polyline({
+        map: map,
+        path: path, // 경로 데이터
+        strokeWeight: 5, // 선 두께
+        strokeColor: '#FF0000', // 선 색상
+        strokeOpacity: 0.8, // 선 투명도
+        strokeStyle: 'solid', // 선 스타일
+      });
+
+      // 지도 화면을 경로에 맞게 조정
+      const bounds = new kakao.maps.LatLngBounds();
+      path.forEach(coord => bounds.extend(coord));
+      map.setBounds(bounds);
+    }
+  </script>
+</body>
+</html>
