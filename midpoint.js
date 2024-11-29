@@ -6,9 +6,17 @@ var midpoint = [];
 let centerMarker = null;
 // 마커 저장 배열
 let markers = [];
+// 전역 InfoWindow
+let globalInfoWindow = new kakao.maps.InfoWindow();
+// 마지막 클릭된 마커
+let lastClickedMarker = null;
+// 키워드 검색을 위한 Kakao 지도 서비스 객체 생성
+const ps = new kakao.maps.services.Places();
 
+// 검색된 마커 배열 저장
+let searchMarkers = [];
 // 태그 이름 목록
-const tags = ['Tag 1', 'Tag 2', 'Tag 3', 'Tag 4', 'Tag 5'];
+const tags = ['지하철', '음식점', '카페', '영화관', '공원'];
 
 // 태그을 추가할 컨테이너
 const tagButtonsContainer = document.getElementById('tagButtons');
@@ -94,6 +102,8 @@ function calculateCenterPoint(markerInfos) {
     if (markerInfos.length === 1) {
         const centerLat = markerInfos[0].lat;
         const centerLng = markerInfos[0].lng;
+        midpoint[0] = centerLat;
+        midpoint[1] = centerLng;
         displayCenterPoint(centerLat, centerLng); // 지도에 표시
         return;
     }
@@ -112,6 +122,8 @@ function calculateCenterPoint(markerInfos) {
 
     const centerLat = weightedLatSum / totalWeight;
     const centerLng = weightedLngSum / totalWeight;
+    midpoint[0] = centerLat;
+    midpoint[1] = centerLng;
     displayCenterPoint(centerLat, centerLng); // 지도에 표시
     return;
 
@@ -120,6 +132,8 @@ function calculateCenterPoint(markerInfos) {
     if (markerInfos.length === 2) {
         const centerLat = (markerInfos[0].lat + markerInfos[1].lat) / 2;
         const centerLng = (markerInfos[0].lng + markerInfos[1].lng) / 2;
+        midpoint[0] = centerLat;
+        midpoint[1] = centerLng;
         displayCenterPoint(centerLat, centerLng); // 지도에 표시
         return;
     }
@@ -128,7 +142,8 @@ function calculateCenterPoint(markerInfos) {
     if (markerInfos.length >= 3) {
         const sortedCoords = sortCoordinates(markerInfos); // 좌표 정렬
         const centroid = calculateCentroid(sortedCoords); // 무게중심 계산
-
+        midpoint[0] = centorid.lat;
+        midpoint[1] = centorid.lng;
         if (centroid) {
             displayCenterPoint(centroid.lat, centroid.lng); // 지도에 표시
         }
@@ -154,31 +169,6 @@ function displayCenterPoint(lat, lng) {
     });
 
     map.setCenter(centerPosition); // 지도의 중심 이동
-}
-
-// 중간 지점을 출력하는 함수
-function displayCenterPoint(lat, lng) {
-    // 기존 중간 지점 마커 제거
-    if (centerMarker) {
-        centerMarker.setMap(null);
-    }
-
-    // 마커 이미지 설정 (app.js와 동일)
-    const imageSrc = './images/marker.png'; // 마커 이미지 경로
-    const imageSize = new kakao.maps.Size(45, 45); // 마커 이미지 크기
-    const imageOption = { offset: new kakao.maps.Point(22, 45) }; // 앵커 포인트 설정
-    const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
-
-    // Kakao 지도에 새로운 중간 지점 마커 추가
-    const centerPosition = new kakao.maps.LatLng(lat, lng);
-    centerMarker = new kakao.maps.Marker({
-        position: centerPosition,
-        image: markerImage, // 마커 이미지 적용
-        map: window.map, // Kakao 지도 객체
-    });
-
-    // 지도의 중심을 중간 지점으로 이동
-    map.setCenter(centerPosition);
 }
 
 function displayMarkerList(markerInfos) {
@@ -314,6 +304,89 @@ function center_point_Selected() {
 
 
 
+// 태그 버튼 클릭 핸들러
+function searchPlacesByKeyword(keyword) {
+    if (!midpoint || midpoint.length === 0) {
+        alert("중간 지점이 설정되지 않았습니다.");
+        return;
+    }
+
+    // 중간 지점을 기준으로 키워드 검색
+    const centerPosition = new kakao.maps.LatLng(midpoint[0], midpoint[1]);
+    globalInfoWindow.close();
+    ps.keywordSearch(keyword, (data, status) => {
+        if (status === kakao.maps.services.Status.OK) {
+            // 기존 검색 마커 제거
+            clearSearchMarkers();
+            let imgobj
+            switch (keyword) {
+                case "지하철":
+                    imgobj = "./images/pin_metro.png";      
+                    break;
+                case "음식점":
+                    imgobj = "./images/pin_restaurant.png";              
+                    break;
+                case "카페":
+                    imgobj = "./images/pin_cafe.png";      
+                    break;
+                case "영화관":
+                    imgobj = "./images/pin_movie.png";      
+                    break;
+                case "공원":
+                    imgobj = "./images/pin_park.png";      
+                    break;            
+                default:
+                    break;
+            }
+            console.log(imgobj);
+            const imageOption = { offset: new kakao.maps.Point(22, 45) };
+            const imageSize = new kakao.maps.Size(45, 45);
+            const pin_image = new kakao.maps.MarkerImage(imgobj, imageSize, imageOption);
+            // 검색 결과 마커 추가
+            data.forEach((place) => {
+                const marker = new kakao.maps.Marker({
+                    map: map,
+                    position: new kakao.maps.LatLng(place.y, place.x),
+                    image:pin_image,
+                });
+
+                // 마커 클릭 이벤트 추가
+                kakao.maps.event.addListener(marker, 'click', () => {
+                    if (lastClickedMarker === marker) {
+                        globalInfoWindow.close();
+                        lastClickedMarker = null; // 마지막 클릭된 마커 초기화
+                        return;
+                    }
+                    // 기존 InfoWindow 닫기
+                    else{
+                        // 새로운 InfoWindow 열기
+                        globalInfoWindow.close();
+                        globalInfoWindow.setContent(
+                            `<div style="padding:5px;font-size:12px;">${place.place_name}</div>`
+                        );
+                        globalInfoWindow.open(map, marker);
+                        lastClickedMarker = marker; // 현재 클릭된 마커 저장
+                    }
+                });
+                searchMarkers.push(marker);
+            });
+
+            // 지도의 중심을 검색 결과 기준으로 이동
+            map.setCenter(centerPosition);
+        } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+            alert("검색 결과가 없습니다.");
+        } else {
+            alert("검색 중 오류가 발생했습니다.");
+        }
+    }, { location: centerPosition });
+}
+
+// 기존 검색 마커 제거 함수
+function clearSearchMarkers() {
+    searchMarkers.forEach(marker => marker.setMap(null));
+    searchMarkers = [];
+}
+
 // ==================== 함수 호출 ====================
 // Kakao 지도 초기화
 var mapContainer = document.getElementById('map'), // 지도를 표시할 div
@@ -335,12 +408,7 @@ tags.forEach((tagName) => {
 
     // 버튼 클릭 이벤트 추가 (필요 시)
     button.addEventListener('click', () => {
-        /* 
-        
-        여기에 추가 하시면 돼욤
-        태그 클릭시 핸들러 
-        
-        */
+        searchPlacesByKeyword(tagName); // 태그 이름으로 검색 실행
     });
 
     // 컨테이너에 버튼 추가
