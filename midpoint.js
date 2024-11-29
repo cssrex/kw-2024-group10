@@ -6,8 +6,8 @@ var midpoint = [];
 let centerMarker = null;
 // 마커 저장 배열
 let markers = [];
-// 전역 InfoWindow
-let globalInfoWindow = new kakao.maps.InfoWindow();
+
+let globalOverlay = null;
 // 마지막 클릭된 마커
 let lastClickedMarker = null;
 // 키워드 검색을 위한 Kakao 지도 서비스 객체 생성
@@ -305,6 +305,7 @@ function center_point_Selected() {
 
 
 // 태그 버튼 클릭 핸들러
+// 태그 버튼 클릭 핸들러 수정
 function searchPlacesByKeyword(keyword) {
     if (!midpoint || midpoint.length === 0) {
         alert("중간 지점이 설정되지 않았습니다.");
@@ -313,61 +314,82 @@ function searchPlacesByKeyword(keyword) {
 
     // 중간 지점을 기준으로 키워드 검색
     const centerPosition = new kakao.maps.LatLng(midpoint[0], midpoint[1]);
-    globalInfoWindow.close();
+    if (globalOverlay) {
+        globalOverlay.setMap(null); // 기존 오버레이 닫기
+    }
     ps.keywordSearch(keyword, (data, status) => {
         if (status === kakao.maps.services.Status.OK) {
             // 기존 검색 마커 제거
             clearSearchMarkers();
-            let imgobj
+
+            let imgobj;
             switch (keyword) {
                 case "지하철":
-                    imgobj = "./images/pin_metro.png";      
+                    imgobj = "./images/pin_metro.png";
                     break;
                 case "음식점":
-                    imgobj = "./images/pin_restaurant.png";              
+                    imgobj = "./images/pin_restaurant.png";
                     break;
                 case "카페":
-                    imgobj = "./images/pin_cafe.png";      
+                    imgobj = "./images/pin_cafe.png";
                     break;
                 case "영화관":
-                    imgobj = "./images/pin_movie.png";      
+                    imgobj = "./images/pin_movie.png";
                     break;
                 case "공원":
-                    imgobj = "./images/pin_park.png";      
-                    break;            
+                    imgobj = "./images/pin_park.png";
+                    break;
                 default:
                     break;
             }
-            console.log(imgobj);
+
             const imageOption = { offset: new kakao.maps.Point(22, 45) };
             const imageSize = new kakao.maps.Size(45, 45);
             const pin_image = new kakao.maps.MarkerImage(imgobj, imageSize, imageOption);
+
             // 검색 결과 마커 추가
             data.forEach((place) => {
                 const marker = new kakao.maps.Marker({
                     map: map,
                     position: new kakao.maps.LatLng(place.y, place.x),
-                    image:pin_image,
+                    image: pin_image,
                 });
 
                 // 마커 클릭 이벤트 추가
                 kakao.maps.event.addListener(marker, 'click', () => {
+                    // 같은 마커를 클릭한 경우 오버레이 닫기
                     if (lastClickedMarker === marker) {
-                        globalInfoWindow.close();
+                        if (globalOverlay) {
+                            globalOverlay.setMap(null);
+                        }
                         lastClickedMarker = null; // 마지막 클릭된 마커 초기화
                         return;
                     }
-                    // 기존 InfoWindow 닫기
-                    else{
-                        // 새로운 InfoWindow 열기
-                        globalInfoWindow.close();
-                        globalInfoWindow.setContent(
-                            `<div style="padding:5px;font-size:12px;">${place.place_name}</div>`
-                        );
-                        globalInfoWindow.open(map, marker);
-                        lastClickedMarker = marker; // 현재 클릭된 마커 저장
+
+                    // 다른 마커를 클릭한 경우 오버레이 표시
+                    if (globalOverlay) {
+                        globalOverlay.setMap(null); // 기존 오버레이 닫기
                     }
+
+                    const overlayContent = `
+                        <div style="padding:10px; border:1px solid #ccc; background:white; border-radius:8px; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
+                            <strong style="font-size:14px;">${place.place_name}</strong>
+                            <p style="font-size:12px; color:#666; margin-top:5px;">${place.address_name}</p>
+                            <a href="${place.place_url}" target="_blank" style="display:inline-block; margin-top:10px; padding:5px 10px; color:white; background:#007BFF; border-radius:4px; text-decoration:none;">상세 보기</a>
+                        </div>
+                    `;
+
+                    globalOverlay = new kakao.maps.CustomOverlay({
+                        content: overlayContent,
+                        map: map,
+                        position: marker.getPosition(),
+                        xAnchor: 0.5,
+                        yAnchor: 1.8,
+                    });
+
+                    lastClickedMarker = marker; // 현재 클릭된 마커 저장
                 });
+
                 searchMarkers.push(marker);
             });
 
@@ -380,6 +402,7 @@ function searchPlacesByKeyword(keyword) {
         }
     }, { location: centerPosition });
 }
+
 
 // 기존 검색 마커 제거 함수
 function clearSearchMarkers() {
