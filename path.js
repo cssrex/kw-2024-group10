@@ -1,6 +1,8 @@
-// ==================== 변수 ====================
-// app.js로부터 마커 데이터 전달 받기 (지우지 말것)
+// ==================== 변수 정의 ====================
+// app.js로부터 마커 데이터 전달 받기
 const markerInfos = JSON.parse(localStorage.getItem('markerInfos'));
+
+// midpoint.js로부터 최종 목적지 전달받기
 const midpoint = JSON.parse(localStorage.getItem('midpoint'));
 
 // Kakao Map 초기화
@@ -18,8 +20,10 @@ const destinationPoint = {
 };
 
 let markers = [];
-let newColor = '#FF0000'; // 경로 색상
+let newColor = '#FF0000'; // 경로의 초기 색상 (빨간색)
 
+
+// ==================== 함수 정의 ====================
 // 지도에 마커 추가
 function addMarker(lat, lng, index) {
     const markerPosition = new kakao.maps.LatLng(lat, lng);
@@ -115,8 +119,6 @@ function displayMarkerList(markerInfos) {
                 Authorization: 'KakaoAK 1b60c2a21577696ea25e7753cb5786fe',
             },
         })
-        // const baseUrl = window.location.hostname === 'localhost' ? 'http://localhost:8080' : 'https://cssrex.github.io/kw-2024-group10';
-        // fetch(`${baseUrl}/directions?origin=${info.lng},${info.lat}&destination=${destinationPoint.lng},${destinationPoint.lat}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Failed to fetch route data.');
@@ -167,41 +169,52 @@ function drawPath(map, routeData) {
     }
     });
 
-    if (path.length === 0) {
-    alert('No valid path data to draw.');
-    return;
-    }
+    if (path.length === 0) return;
 
+    // 매 실행마다 경로의 색상을 달라지게 함
     let r = parseInt(newColor.substring(1, 3), 16);
     let g = parseInt(newColor.substring(3, 5), 16);
     let b = parseInt(newColor.substring(5, 7), 16);
 
-    r = (r - 15) % 256;
-    g = (g + 30) % 256;
-    b = (b + 45) % 256;
+    // 이전 색상과 얼마나 차이나게 할지 결정
+    r = (r - 20) % 256;
+    g = (g + 40) % 256;
+    b = (b + 60) % 256;
 
     newColor = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
 
-    // Polyline 생성 및 지도에 표시
+    // 지도에 경로 그리기
     const polyline = new kakao.maps.Polyline({
-    map: map,
-    path: path, // 경로 데이터
-    strokeWeight: 5, // 선 두께
-    strokeColor: newColor, // 선 색상
-    strokeOpacity: 0.8, // 선 투명도
-    strokeStyle: 'solid', // 선 스타일
+        map: map,
+        path: path, // 경로 데이터
+        strokeWeight: 5, // 선 두께
+        strokeColor: newColor, // 선 색상
+        strokeOpacity: 0.8, // 선 투명도
+        strokeStyle: 'solid', // 선 스타일
     });
 }
 
 // 목적지를 지도에 표시
 function addDestinationMarker() {
+
+    const imageSrc = './images/marker.png'; // 마커 이미지 경로
+    const imageSize = new kakao.maps.Size(45, 45);
+    const imageOption = { offset: new kakao.maps.Point(22, 45) };
+    const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
+
     const markerPosition = new kakao.maps.LatLng(destinationPoint.lat, destinationPoint.lng);
     const marker = new kakao.maps.Marker({
         position: markerPosition,
+        image: markerImage,
         map: map,
     });
+
     map.setCenter(markerPosition); // 지도 중심을 새로운 좌표로 이동
+
+    
 }
 
+
+// ==================== 함수 실행 ====================
 displayMarkerList(markerInfos);
 addDestinationMarker();
