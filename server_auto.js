@@ -4,11 +4,13 @@
 const express = require('express');
 const https = require('https'); // Node.js 기본 HTTPS 모듈
 const path = require('path');
+const cors = require('cors');
 
 const app = express();
 const PORT = 8080;
 
 // 웹 페이지 파일을 제공
+app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // 서버 시작
