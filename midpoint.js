@@ -389,7 +389,7 @@ function searchPlacesByKeyword(keyword) {
                             <strong style="font-size:14px;">${place.place_name}</strong>
                             <p style="font-size:12px; color:#666; margin-top:5px;">${place.address_name}</p>
                             <a href="${place.place_url}" target="_blank" style="display:inline-block; margin-top:10px; padding:5px 10px; color:white; background:#007BFF; border-radius:4px; text-decoration:none;">상세 보기</a>
-                            <a href="drawpath.html?lat=${place.y}&lng=${place.x}" target="_self" style="display:inline-block; padding:5px 10px; color:white; background:#28A745; border-radius:4px; text-decoration:none;">경로 표시</a>
+                            <a href="/drawpath.html?lat=${place.y}&lng=${place.x}" target="_self" style="display:inline-block; padding:5px 10px; color:white; background:#28A745; border-radius:4px; text-decoration:none;">경로 표시</a>
                         </div>
                     `;
 
