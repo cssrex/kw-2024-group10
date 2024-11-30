@@ -108,8 +108,15 @@ function displayMarkerList(markerInfos) {
         // 기본적으로 선택된 마커 추가
         addMarker(info.lat, info.lng, index);
 
-        const baseUrl = window.location.hostname === 'localhost' ? 'http://localhost:8080' : 'https://cssrex.github.io/kw-2024-group10';
-        fetch(`${baseUrl}/directions?origin=${info.lng},${info.lat}&destination=${destinationPoint.lng},${destinationPoint.lat}`)
+        const kakaoApiUrl = `https://apis-navi.kakaomobility.com/v1/directions?origin=${info.lng},${info.lat}&destination=${destinationPoint.lng},${destinationPoint.lat}&priority=RECOMMEND&road_type=1&format=json`;
+
+        fetch(kakaoApiUrl, {
+            headers: {
+                Authorization: 'KakaoAK 1b60c2a21577696ea25e7753cb5786fe',
+            },
+        })
+        // const baseUrl = window.location.hostname === 'localhost' ? 'http://localhost:8080' : 'https://cssrex.github.io/kw-2024-group10';
+        // fetch(`${baseUrl}/directions?origin=${info.lng},${info.lat}&destination=${destinationPoint.lng},${destinationPoint.lat}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Failed to fetch route data.');
