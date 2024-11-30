@@ -388,7 +388,7 @@ function searchPlacesByKeyword(keyword) {
                         globalOverlay.setMap(null); // 기존 오버레이 닫기
                     }
 
-                    const baseUrl = window.location.hostname === 'localhost' ? '' : '/repository-name';
+                    const baseUrl = window.location.hostname === 'localhost' ? '' : '/kw-2024-group10';
 
                     const overlayContent = `
                         <div style="padding:10px; border:1px solid #ccc; background:white; border-radius:8px; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
