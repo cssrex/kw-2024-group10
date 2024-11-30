@@ -108,7 +108,8 @@ function displayMarkerList(markerInfos) {
         // 기본적으로 선택된 마커 추가
         addMarker(info.lat, info.lng, index);
 
-        fetch(`http://localhost:8080/directions?origin=${info.lng},${info.lat}&destination=${destinationPoint.lng},${destinationPoint.lat}`)
+        const baseUrl = window.location.hostname === 'localhost' ? 'http://localhost:8080' : 'https://cssrex.github.io/kw-2024-group10/drawpath.html';
+        fetch(`${baseUrl}/directions?origin=${info.lng},${info.lat}&destination=${destinationPoint.lng},${destinationPoint.lat}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Failed to fetch route data.');
