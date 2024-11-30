@@ -1,7 +1,7 @@
 // ==================== 변수 ====================
 // app.js로부터 마커 데이터 전달 받기 (지우지 말것)
 const markerInfos = JSON.parse(localStorage.getItem('markerInfos'));
-const queryString = new URLSearchParams(window.location.search);
+const midpoint = JSON.parse(localStorage.getItem('midpoint'));
 
 // Kakao Map 초기화
 const mapContainer = document.getElementById('map');
@@ -13,8 +13,8 @@ const map = new kakao.maps.Map(mapContainer, mapOption);
 
 // 목적지 좌표 불러오기
 const destinationPoint = { 
-    lat: queryString.get("lat"),
-    lng: queryString.get("lng")
+    lat: midpoint[0],
+    lng: midpoint[1]
 };
 
 let markers = [];

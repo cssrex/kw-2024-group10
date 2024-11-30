@@ -104,6 +104,7 @@ function calculateCenterPoint(markerInfos) {
         const centerLng = markerInfos[0].lng;
         midpoint[0] = centerLat;
         midpoint[1] = centerLng;
+        localStorage.setItem('midpoint', JSON.stringify(midpoint));
         displayCenterPoint(centerLat, centerLng); // 지도에 표시
         return;
     }
@@ -124,6 +125,7 @@ function calculateCenterPoint(markerInfos) {
     const centerLng = weightedLngSum / totalWeight;
     midpoint[0] = centerLat;
     midpoint[1] = centerLng;
+    localStorage.setItem('midpoint', JSON.stringify(midpoint));
     displayCenterPoint(centerLat, centerLng); // 지도에 표시
 
     // midpoint에서 위도와 경도만 추출
@@ -140,6 +142,7 @@ function calculateCenterPoint(markerInfos) {
         const centerLng = (markerInfos[0].lng + markerInfos[1].lng) / 2;
         midpoint[0] = centerLat;
         midpoint[1] = centerLng;
+        localStorage.setItem('midpoint', JSON.stringify(midpoint));
         displayCenterPoint(centerLat, centerLng); // 지도에 표시
         return;
     }
@@ -150,6 +153,7 @@ function calculateCenterPoint(markerInfos) {
         const centroid = calculateCentroid(sortedCoords); // 무게중심 계산
         midpoint[0] = centorid.lat;
         midpoint[1] = centorid.lng;
+        localStorage.setItem('midpoint', JSON.stringify(midpoint));
         if (centroid) {
             displayCenterPoint(centroid.lat, centroid.lng); // 지도에 표시
         }
@@ -389,7 +393,7 @@ function searchPlacesByKeyword(keyword) {
                             <strong style="font-size:14px;">${place.place_name}</strong>
                             <p style="font-size:12px; color:#666; margin-top:5px;">${place.address_name}</p>
                             <a href="${place.place_url}" target="_blank" style="display:inline-block; margin-top:10px; padding:5px 10px; color:white; background:#007BFF; border-radius:4px; text-decoration:none;">상세 보기</a>
-                            <a href="/drawpath.html?lat=${place.y}&lng=${place.x}" target="_self" style="display:inline-block; padding:5px 10px; color:white; background:#28A745; border-radius:4px; text-decoration:none;">경로 표시</a>
+                            <a href="/drawpath.html" target="_self" style="display:inline-block; padding:5px 10px; color:white; background:#28A745; border-radius:4px; text-decoration:none;">경로 표시</a>
                         </div>
                     `;
 
