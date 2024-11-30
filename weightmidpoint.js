@@ -69,7 +69,7 @@ function calculateWeightedCenter(markerInfos) {
         }),
         { lat: 0, lng: 0 }
     );
-    
+
     // 7. 가중치 계산
     let weightFar = 0.01; // 기본 가중치
     if (farPoint) {
@@ -81,16 +81,16 @@ function calculateWeightedCenter(markerInfos) {
     // 8. 가중치를 적용하여 중간 좌표 계산
     const weightedCenter = farPoint
         ? {
-              lat:
-                  (closeCenter.lat + weightFar * farPoint.lat) /
-                  (1 + weightFar),
-              lng:
-                  (closeCenter.lng + weightFar * farPoint.lng) /
-                  (1 + weightFar),
-          }
+            lat:
+                (closeCenter.lat + weightFar * farPoint.lat) /
+                (1 + weightFar),
+            lng:
+                (closeCenter.lng + weightFar * farPoint.lng) /
+                (1 + weightFar),
+        }
         : closeCenter; // 멀리 있는 점이 없으면 가까운 점 중심 반환
-    
-    if(farPoint==closeCenter) console.log("동일");
+
+    if (farPoint == closeCenter) console.log("동일");
 
     displayCenterPoint(weightedCenter.lat, weightedCenter.lng);
 }
