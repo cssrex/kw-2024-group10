@@ -388,7 +388,9 @@ function searchPlacesByKeyword(keyword) {
                         globalOverlay.setMap(null); // 기존 오버레이 닫기
                     }
 
-                    const baseUrl = window.location.hostname === 'localhost' ? '' : '/kw-2024-group10';
+                    //로컬 호스트와 git hub 웹 페이지에서 둘 다 사용 가능하도록 하기 위한 상대적 주소 설정
+                    const baseUrl = window.location.hostname === 'localhost' ? '' : '/kw-2024-group10' ;
+
 
                     const overlayContent = `
                         <div style="padding:10px; border:1px solid #ccc; background:white; border-radius:8px; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
