@@ -104,7 +104,6 @@ function calculateCenterPoint(markerInfos) {
         const centerLng = markerInfos[0].lng;
         midpoint[0] = centerLat;
         midpoint[1] = centerLng;
-        localStorage.setItem('midpoint', JSON.stringify(midpoint));
         displayCenterPoint(centerLat, centerLng); // 지도에 표시
         return;
     }
@@ -125,7 +124,6 @@ function calculateCenterPoint(markerInfos) {
     const centerLng = weightedLngSum / totalWeight;
     midpoint[0] = centerLat;
     midpoint[1] = centerLng;
-    localStorage.setItem('midpoint', JSON.stringify(midpoint));
     displayCenterPoint(centerLat, centerLng); // 지도에 표시
 
     // midpoint에서 위도와 경도만 추출
@@ -142,7 +140,6 @@ function calculateCenterPoint(markerInfos) {
         const centerLng = (markerInfos[0].lng + markerInfos[1].lng) / 2;
         midpoint[0] = centerLat;
         midpoint[1] = centerLng;
-        localStorage.setItem('midpoint', JSON.stringify(midpoint));
         displayCenterPoint(centerLat, centerLng); // 지도에 표시
         return;
     }
@@ -153,7 +150,6 @@ function calculateCenterPoint(markerInfos) {
         const centroid = calculateCentroid(sortedCoords); // 무게중심 계산
         midpoint[0] = centorid.lat;
         midpoint[1] = centorid.lng;
-        localStorage.setItem('midpoint', JSON.stringify(midpoint));
         if (centroid) {
             displayCenterPoint(centroid.lat, centroid.lng); // 지도에 표시
         }
@@ -387,6 +383,13 @@ function searchPlacesByKeyword(keyword) {
                     if (globalOverlay) {
                         globalOverlay.setMap(null); // 기존 오버레이 닫기
                     }
+                    
+                    const destinationPosition = marker.getPosition();
+                    var destination = [];
+                    destination[0] = destinationPosition.getLat();
+                    destination[1] = destinationPosition.getLng();
+                    localStorage.setItem('midpoint', JSON.stringify(destination));
+
 
                     //로컬 호스트와 git hub 웹 페이지에서 둘 다 사용 가능하도록 하기 위한 상대적 주소 설정
                     const baseUrl = window.location.hostname === 'localhost' ? '' : '/kw-2024-group10' ;
