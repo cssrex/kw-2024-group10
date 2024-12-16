@@ -220,7 +220,6 @@ function displayMarkerList(markerInfos) {
         // 설명
         const description = document.createElement("p");
         description.className = "mt-1 text-sm text-gray-600";
-        description.innerText = `Latitude: ${info.lat}, Longitude: ${info.lng}`;
 
         // 가중치 슬라이더 추가
         const weightSlider = document.createElement("input");
@@ -267,12 +266,41 @@ function addMarker(lat, lng, index) {
         position: markerPosition,
         map: map,
     });
+
+    // CustomOverlay 생성 (마커 위에 번호 표시)
+    const content = `
+        <div style="
+            display: inline-block;
+            padding: 5px 10px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #82B7FF;
+            text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+            border-radius: 5px;
+            border: 0.3px solid black;
+            text-align: center;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5);">
+            Marker ${index + 1}
+        </div>
+    `;
+
+    const overlay = new kakao.maps.CustomOverlay({
+        content: content,
+        position: markerPosition,
+        yAnchor: -0.3, // 마커의 아래쪽에 표시되도록 설정
+        xAnchor: 0.5,
+    });
+
+    // CustomOverlay를 지도에 표시
+    overlay.setMap(map);
+
     kakao.maps.event.addListener(marker, 'click', () => {
         const checkbox = document.getElementById(`marker-${index}`);
         if (checkbox) {
             checkbox.checked = !checkbox.checked; // 체크박스 상태 반전
             if (checkbox.checked) {
-                addMarker(lat, lng, index);
+                addMarker(lat, lng, index, info.addr);
             } else {
                 removeMarker(index);
             }
@@ -281,16 +309,18 @@ function addMarker(lat, lng, index) {
     });
 
     // 마커 배열에 저장
-    markers[index] = marker;
+    markers[index] = { marker, overlay };
 }
 
 // 지도에서 마커 제거
 function removeMarker(index) {
     if (markers[index]) {
-        markers[index].setMap(null); // 지도에서 제거
+        markers[index].marker.setMap(null); // 마커 제거
+        markers[index].overlay.setMap(null); // 오버레이 제거
         markers[index] = null; // 배열에서 제거
     }
 }
+
 function center_point_Selected() {
     // 선택된 마커만 필터링
     const selectedMarkers = [];
@@ -383,7 +413,7 @@ function searchPlacesByKeyword(keyword) {
                     if (globalOverlay) {
                         globalOverlay.setMap(null); // 기존 오버레이 닫기
                     }
-                    
+
                     const destinationPosition = marker.getPosition();
                     var destination = [];
                     destination[0] = destinationPosition.getLat();
@@ -392,7 +422,7 @@ function searchPlacesByKeyword(keyword) {
 
 
                     //로컬 호스트와 git hub 웹 페이지에서 둘 다 사용 가능하도록 하기 위한 상대적 주소 설정
-                    const baseUrl = window.location.hostname === 'localhost' ? '' : '/kw-2024-group10' ;
+                    const baseUrl = window.location.hostname === 'localhost' ? '' : '/kw-2024-group10';
 
 
                     const overlayContent = `
