@@ -82,3 +82,10 @@ body {
 #toggleButton.hidden {
     transform: translateX(-100%);
 }
+
+#markerList {
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: auto;
+    gap: 10px;
+}
